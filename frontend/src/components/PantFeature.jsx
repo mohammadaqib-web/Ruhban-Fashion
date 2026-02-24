@@ -1,6 +1,8 @@
 import { Box, Typography, Button, Container } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-const PantFeature = () => {
+const PantFeature = ({ pantCat }) => {
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -27,7 +29,7 @@ const PantFeature = () => {
               width: { xs: "100%", md: "45%" },
               borderRadius: 2,
               objectFit: "cover",
-              height:"400px"
+              height: "400px",
             }}
           />
 
@@ -53,8 +55,7 @@ const PantFeature = () => {
                 mb: 3,
               }}
             >
-              Upgrade Your Bottoms with Our Pants <br />
-              price reduce from 750 to 699
+              Upgrade Your Bottoms with Our Pants
             </Typography>
 
             <Typography
@@ -84,6 +85,11 @@ const PantFeature = () => {
                   borderColor: "#fff",
                 },
               }}
+              onClick={() =>
+                pantCat
+                  ? navigate(`/products/${pantCat.name}/${pantCat._id}`)
+                  : navigate(`/products`)
+              }
             >
               Shop Now
             </Button>

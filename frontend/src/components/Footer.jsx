@@ -5,10 +5,13 @@ import {
   Typography,
   TextField,
   Button,
+  IconButton,
 } from "@mui/material";
-import logo from "../assets/logo-removebg.png";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import { useNavigate } from "react-router-dom";
 
-const Footer = () => {
+const Footer = ({ categories = [] }) => {
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -36,12 +39,13 @@ const Footer = () => {
               // size={{ xs: 12, md: 4 }}
             >
               <Typography variant="h5" sx={{ mb: 2 }}>
-                About Us
+                Company
               </Typography>
-              <FooterLink text="Our Story" />
-              <FooterLink text="Our Process" />
-              <FooterLink text="Press" />
-              <FooterLink text="Store Locator" />
+              <FooterLink text="About Us" onClick={() => navigate("/about")} />
+              <FooterLink
+                text="Contact Us"
+                onClick={() => navigate("/contact")}
+              />
             </Grid>
 
             {/* Customer Service */}
@@ -52,12 +56,40 @@ const Footer = () => {
               md={4}
             >
               <Typography variant="h5" sx={{ mb: 2 }}>
-                Customer Service
+                Products
               </Typography>
-              <FooterLink text="Privacy Policy" />
-              <FooterLink text="Terms of Use" />
-              <FooterLink text="Shipping & Returns" />
-              <FooterLink text="Contact" />
+              <FooterLink
+                text={categories?.categories[0]?.name.toUpperCase()}
+                onClick={() =>
+                  navigate(
+                    `/products/${categories.categories[0].name}/${categories.categories[0]._id}`,
+                  )
+                }
+              />
+              <FooterLink
+                text={categories?.categories[1]?.name.toUpperCase()}
+                onClick={() =>
+                  navigate(
+                    `/products/${categories.categories[0].name}/${categories.categories[0]._id}`,
+                  )
+                }
+              />
+              <FooterLink
+                text={categories?.categories[2]?.name.toUpperCase()}
+                onClick={() =>
+                  navigate(
+                    `/products/${categories.categories[0].name}/${categories.categories[0]._id}`,
+                  )
+                }
+              />
+              <FooterLink
+                text={categories?.categories[3]?.name.toUpperCase()}
+                onClick={() =>
+                  navigate(
+                    `/products/${categories.categories[0].name}/${categories.categories[0]._id}`,
+                  )
+                }
+              />
             </Grid>
 
             {/* Contact */}
@@ -66,13 +98,21 @@ const Footer = () => {
               item
               xs={12}
               md={4}
+              textAlign={"center"}
             >
               <Typography variant="h5" sx={{ mb: 2 }}>
-                Contact Us
+                Follow Us On
               </Typography>
-              <FooterLink text="Ballia" />
-              <FooterLink text="+91 9876543210" />
-              <FooterLink text="customercare@rf.com" />
+              {/* <FooterLink text="Ballia" /> */}
+              <IconButton
+                component="a"
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ color: "#fff" }}
+              >
+                <InstagramIcon />
+              </IconButton>
             </Grid>
           </Grid>
 
@@ -102,7 +142,7 @@ const Footer = () => {
   );
 };
 
-const FooterLink = ({ text }) => (
+const FooterLink = ({ text, onClick }) => (
   <Typography
     sx={{
       mb: 1,
@@ -114,6 +154,7 @@ const FooterLink = ({ text }) => (
         transform: "translateX(5px)",
       },
     }}
+    onClick={onClick}
   >
     {text}
   </Typography>

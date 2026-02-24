@@ -5,11 +5,9 @@ const theme = createTheme({
     primary: { main: "#000" },
     secondary: { main: "#555" },
   },
-
   typography: {
     fontFamily: `"Aldrich", sans-serif`,
   },
-
   components: {
     MuiButton: {
       styleOverrides: {

@@ -210,3 +210,99 @@ exports.getProductsAdmin = async (req, res) => {
     });
   }
 };
+
+// ===============================
+// Get All Products (User)
+// ===============================
+exports.getProducts = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    // Only active products
+    const query = { isActive: true };
+
+    const totalProducts = await Product.countDocuments(query);
+
+    const products = await Product.find(query)
+      .populate("category", "name")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      success: true,
+      currentPage: page,
+      totalPages: Math.ceil(totalProducts / limit),
+      totalProducts,
+      count: products.length,
+      products,
+    });
+  } catch (error) {
+    console.error("Get Products Error:", error);
+    res.status(500).json({
+      message: "Failed to fetch products",
+    });
+  }
+};
+
+// ===============================
+// Get Products By Category (User)
+// ===============================
+exports.getProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.params; 
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    let categoryDoc;
+
+    // If valid MongoId → search by id
+    if (category.match(/^[0-9a-fA-F]{24}$/)) {
+      categoryDoc = await Category.findById(category);
+    } else {
+      // Otherwise search by name (case insensitive)
+      categoryDoc = await Category.findOne({
+        name: { $regex: new RegExp(`^${category}$`, "i") },
+      });
+    }
+
+    if (!categoryDoc) {
+      return res.status(404).json({
+        message: "Category not found",
+      });
+    }
+
+    const query = {
+      category: categoryDoc._id,
+      isActive: true,
+    };
+
+    const totalProducts = await Product.countDocuments(query);
+
+    const products = await Product.find(query)
+      .populate("category", "name")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      success: true,
+      category: categoryDoc.name,
+      currentPage: page,
+      totalPages: Math.ceil(totalProducts / limit),
+      totalProducts,
+      count: products.length,
+      products,
+    });
+  } catch (error) {
+    console.error("Get Products By Category Error:", error);
+    res.status(500).json({
+      message: "Failed to fetch category products",
+    });
+  }
+};

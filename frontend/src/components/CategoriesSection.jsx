@@ -8,77 +8,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import "swiper/css";
 import "swiper/css/navigation";
 
-const categories = [
-  {
-    title: "SHIRT",
-    image:
-      "https://images.unsplash.com/photo-1740711152088-88a009e877bb?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "T-SHIRT",
-    image:
-      "https://images.unsplash.com/photo-1516177609387-9bad55a45194?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "JEANS",
-    image:
-      "https://images.unsplash.com/photo-1511196044526-5cb3bcb7071b?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "UNDER GARMENTS",
-    image: "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d",
-  },
-  {
-    title: "SHOES",
-    image:
-      "https://plus.unsplash.com/premium_photo-1670983858132-c2f3c4dbf08c?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "ATTAR",
-    image:
-      "https://images.unsplash.com/photo-1612784642053-15614e602ed7?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "PERFUMES",
-    image: "https://images.unsplash.com/photo-1594035910387-fea47794261f",
-  },
-  {
-    title: "WATCHES",
-    image:
-      "https://images.unsplash.com/photo-1751437715301-4030182f4606?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "LOWERS",
-    image:
-      "https://images.unsplash.com/photo-1687376020738-423299939b18?q=80&w=695&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "COTTON PANT",
-    image:
-      "https://images.unsplash.com/photo-1661352754488-4776516fcf31?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "FORMAL PANT",
-    image:
-      "https://plus.unsplash.com/premium_photo-1769131129681-3f5e1a931e44?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "BELT",
-    image:
-      "https://images.unsplash.com/photo-1664286074240-d7059e004dff?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    title: "KOREAN PANT",
-    image:
-      "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcS5a8YGop429MmlTRhhqJOjXANBAYYXm6k2pDCHqPZ-7g0gvu6oESza9DoXUIZ_2wGecM9UnosZjM3cgwPZYRmIQGUjMU7KFx8eIR4RI6Uf",
-  },
-  // {
-  //   title: "CODESET",
-  //   image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf",
-  // },
-];
-
-const CategoriesSection = () => {
+const CategoriesSection = ({ categories }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -193,8 +123,8 @@ const CategoryCard = ({ item }) => {
     >
       <Box
         component="img"
-        src={item.image}
-        alt={item.title}
+        src={item.image.url}
+        alt={item.name}
         sx={{
           width: "100%",
           height: { xs: 250, sm: 320 },
@@ -224,7 +154,7 @@ const CategoryCard = ({ item }) => {
             letterSpacing: 1,
           }}
         >
-          {item.title}
+          {item.name.toUpperCase()}
         </Typography>
       </Box>
     </Box>

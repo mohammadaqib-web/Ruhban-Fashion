@@ -5,6 +5,7 @@ import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
+import { useNavigate } from "react-router-dom";
 
 const slides = [
   {
@@ -27,6 +28,8 @@ const slides = [
 ];
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <Box sx={{ width: "100%", height: { xs: "50vh", sm: "90vh" } }}>
       <Swiper
@@ -104,6 +107,7 @@ const Hero = () => {
                         backgroundColor: "#222",
                       },
                     }}
+                    onClick={() => navigate("/products")}
                   >
                     Shop Now
                   </Button>

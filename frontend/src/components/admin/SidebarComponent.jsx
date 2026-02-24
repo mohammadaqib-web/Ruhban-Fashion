@@ -23,7 +23,7 @@ const Sidebar = ({ open, drawerWidth }) => {
         </ListItemButton>
 
         <ListItemButton component={Link} to="/admin/categories">
-          <ListItemText primary="Category" />
+          <ListItemText primary="Categories" />
         </ListItemButton>
 
         <ListItemButton component={Link} to="/admin/products">
