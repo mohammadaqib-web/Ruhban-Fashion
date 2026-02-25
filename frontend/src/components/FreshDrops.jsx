@@ -15,7 +15,7 @@ export default function FreshDrops({ category }) {
         setLoading(true);
 
         const res = await axios.get(
-          `${import.meta.env.VITE_APP_API}/products/category/${category._id}?page=1&limit=4`
+          `${import.meta.env.VITE_APP_API}/products/category/${category._id}?page=1&limit=4`,
         );
 
         setProducts(res.data.products);
@@ -73,7 +73,10 @@ export default function FreshDrops({ category }) {
                 id={product._id}
                 image={product.images?.[0]?.url}
                 title={product.name}
-                price={product.sizes?.[0]?.price}
+                price={
+                  product.sizes?.[0]?.discountPrice || product.sizes?.[0]?.price
+                }
+                oldPrice={product.sizes?.[0]?.price}
               />
             </Grid>
           ))}

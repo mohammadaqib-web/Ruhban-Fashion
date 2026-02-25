@@ -4,6 +4,7 @@ import FeaturesSection from "../components/FeaturesSection";
 import FreshDrops from "../components/FreshDrops";
 import Hero from "../components/Hero";
 import PantFeature from "../components/PantFeature";
+import { Box } from "@mui/material";
 
 export default function Home() {
   const { categories } = useOutletContext();
@@ -18,8 +19,10 @@ export default function Home() {
       <PantFeature pantCat={pantCategories[0]} />
       <FreshDrops category={categories[0]} />
       <FeaturesSection />
-      <FreshDrops category={categories[1]}/>
-      <FreshDrops category={categories[2]}/>
+      <FreshDrops category={categories[1]} />
+      <Box mt={-9} mb={3}>
+        <FreshDrops category={categories[2]} />
+      </Box>
     </>
   );
 }

@@ -101,7 +101,7 @@ export default function ProductCard({
             ₹{price}
           </Typography>
 
-          {oldPrice && (
+          {oldPrice && oldPrice > price && (
             <Typography
               component="span"
               sx={{
@@ -128,7 +128,7 @@ export default function ProductCard({
             },
           }}
         >
-          Buy Now
+          See Product
         </Button>
       </CardContent>
     </Card>

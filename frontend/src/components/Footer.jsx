@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Footer = ({ categories = [] }) => {
   const navigate = useNavigate();
@@ -41,11 +42,8 @@ const Footer = ({ categories = [] }) => {
               <Typography variant="h5" sx={{ mb: 2 }}>
                 Company
               </Typography>
-              <FooterLink text="About Us" onClick={() => navigate("/about")} />
-              <FooterLink
-                text="Contact Us"
-                onClick={() => navigate("/contact")}
-              />
+              <FooterLink text="About Us" to="/about" />
+              <FooterLink text="Contact Us" to="/contact" />
             </Grid>
 
             {/* Customer Service */}
@@ -60,35 +58,19 @@ const Footer = ({ categories = [] }) => {
               </Typography>
               <FooterLink
                 text={categories?.categories[0]?.name.toUpperCase()}
-                onClick={() =>
-                  navigate(
-                    `/products/${categories.categories[0].name}/${categories.categories[0]._id}`,
-                  )
-                }
+                to={`/products/${categories?.categories[0]?.name}/${categories?.categories[0]?._id}`}
               />
               <FooterLink
                 text={categories?.categories[1]?.name.toUpperCase()}
-                onClick={() =>
-                  navigate(
-                    `/products/${categories.categories[0].name}/${categories.categories[0]._id}`,
-                  )
-                }
+                to={`/products/${categories?.categories[1]?.name}/${categories?.categories[0]?._id}`}
               />
               <FooterLink
                 text={categories?.categories[2]?.name.toUpperCase()}
-                onClick={() =>
-                  navigate(
-                    `/products/${categories.categories[0].name}/${categories.categories[0]._id}`,
-                  )
-                }
+                to={`/products/${categories?.categories[2]?.name}/${categories?.categories[0]?._id}`}
               />
               <FooterLink
                 text={categories?.categories[3]?.name.toUpperCase()}
-                onClick={() =>
-                  navigate(
-                    `/products/${categories.categories[0].name}/${categories.categories[0]._id}`,
-                  )
-                }
+                to={`/products/${categories?.categories[3]?.name}/${categories?.categories[0]?._id}`}
               />
             </Grid>
 
@@ -142,22 +124,24 @@ const Footer = ({ categories = [] }) => {
   );
 };
 
-const FooterLink = ({ text, onClick }) => (
-  <Typography
+const FooterLink = ({ text, to }) => (
+  <Box
+    component={Link}
+    to={to}
     sx={{
+      display: "block",
       mb: 1,
-      cursor: "pointer",
       color: "#ccc",
+      textDecoration: "none",
       transition: "0.3s",
       "&:hover": {
         color: "#fff",
         transform: "translateX(5px)",
       },
     }}
-    onClick={onClick}
   >
     {text}
-  </Typography>
+  </Box>
 );
 
 export default Footer;

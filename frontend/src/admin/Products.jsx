@@ -318,8 +318,18 @@ const Products = () => {
                     />
                   </TableCell>
 
-                  <TableCell>
-                    <Typography fontWeight="600">{product.name}</Typography>
+                  <TableCell sx={{ maxWidth: 300 }}>
+                    <Typography
+                      fontWeight="600"
+                      sx={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                      title={product.name} // shows full name on hover
+                    >
+                      {product.name}
+                    </Typography>
 
                     <Typography variant="body2" color="text.secondary">
                       ₹ {minPrice}
