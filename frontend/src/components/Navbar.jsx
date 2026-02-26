@@ -52,7 +52,11 @@ const Navbar = ({ categories = [] }) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = (linkTo) => {
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuItemClick = (linkTo) => {
     if (linkTo) navigate(linkTo);
     setAnchorEl(null);
   };
@@ -200,7 +204,7 @@ const Navbar = ({ categories = [] }) => {
                     }}
                   >
                     <MenuItem
-                      onClick={() => handleMenuClose("/products")}
+                      onClick={() => handleMenuItemClick("/products")}
                       sx={{ fontSize: 16 }}
                     >
                       {"ALL PRODUCTS"}
@@ -212,7 +216,7 @@ const Navbar = ({ categories = [] }) => {
                           <MenuItem
                             key={cat._id}
                             onClick={() =>
-                              handleMenuClose(
+                              handleMenuItemClick(
                                 `/products/${cat.name}/${cat._id}`,
                               )
                             }

@@ -255,9 +255,9 @@ const AllProducts = () => {
       >
         <Typography variant={"h4"} p={2} textAlign={"center"}>
           {id
-            ? categories?.find((cat) => cat._id === id)?.name.toUpperCase() ||
-              "Category"
-            : "ALL PRODUCTS"}
+            ? categories?.find((cat) => cat._id === id)?.name.toUpperCase()
+            : // || "Category"
+              "ALL PRODUCTS"}
         </Typography>
         <Divider
           sx={{

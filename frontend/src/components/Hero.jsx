@@ -6,22 +6,25 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import { useNavigate } from "react-router-dom";
+import hero1 from "../assets/hero1.webp";
+import hero2 from "../assets/hero2.webp";
+import hero3 from "../assets/hero3.webp";
 
 const slides = [
   {
-    image: "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59",
+    image: hero1,
     title: "Elevate Your Wardrobe",
     subtitle:
       "Upgrade your style game with our 2026 Collection — where every piece promises to elevate your look.",
   },
   {
-    image: "https://images.unsplash.com/photo-1516257984-b1b4d707412e",
+    image: hero2,
     title: "Premium Street Style",
     subtitle:
       "Discover bold designs crafted for modern confidence and timeless appeal.",
   },
   {
-    image: "https://images.unsplash.com/photo-1520975916090-3105956dac38",
+    image: hero3,
     title: "Exclusive Collection",
     subtitle: "Redefine fashion with curated pieces made for the trendsetters.",
   },
