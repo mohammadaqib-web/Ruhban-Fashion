@@ -20,7 +20,7 @@ export default function Home() {
       <FreshDrops category={categories[0]} />
       <FeaturesSection />
       <FreshDrops category={categories[1]} />
-      <Box mt={-9} mb={3}>
+      <Box mt={-5} mb={4}>
         <FreshDrops category={categories[2]} />
       </Box>
     </>

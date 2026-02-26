@@ -49,11 +49,11 @@ const Navbar = ({ categories = [] }) => {
     setOpenProducts(!openProducts);
   };
   const handleMenuOpen = (event) => {
-    console.log({ categories: categories.categories });
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleMenuClose = (linkTo) => {
+    if (linkTo) navigate(linkTo);
     setAnchorEl(null);
   };
 
@@ -199,7 +199,10 @@ const Navbar = ({ categories = [] }) => {
                       color: "white",
                     }}
                   >
-                    <MenuItem onClick={handleMenuClose} sx={{ fontSize: 16 }}>
+                    <MenuItem
+                      onClick={() => handleMenuClose("/products")}
+                      sx={{ fontSize: 16 }}
+                    >
                       {"ALL PRODUCTS"}
                     </MenuItem>
                     {categories.categories.length > 0 &&
@@ -209,7 +212,9 @@ const Navbar = ({ categories = [] }) => {
                           <MenuItem
                             key={cat._id}
                             onClick={() =>
-                              navigate(`/products/${cat.name}/${cat._id}`)
+                              handleMenuClose(
+                                `/products/${cat.name}/${cat._id}`,
+                              )
                             }
                             sx={{
                               backgroundColor: isActive(

@@ -12,7 +12,7 @@ const {
   getProductsByCategory,
 } = require("../controllers/product.controller");
 
-router.get("/getProducts", getProducts);
+router.get("/user", getProducts);
 router.get("/category/:category", getProductsByCategory);
 router.post("/", auth, admin, upload.array("images", 5), createProduct);
 router.get("/", auth, admin, getProductsAdmin);

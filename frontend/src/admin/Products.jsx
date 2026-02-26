@@ -84,7 +84,7 @@ const Products = () => {
       const fileArray = Array.from(files);
       setFormData({ ...formData, images: fileArray });
 
-      const previews = fileArray.map((file) => URL.createObjectURL(file));
+      const previews = fileArray?.map((file) => URL.createObjectURL(file));
       setPreviewImages(previews);
     } else if (type === "checkbox") {
       setFormData({ ...formData, [name]: checked });
@@ -110,7 +110,7 @@ const Products = () => {
   };
 
   const removeSizeRow = (index) => {
-    if (formData.sizes.length === 1) return;
+    if (formData.sizes?.length === 1) return;
 
     const updated = formData.sizes.filter((_, i) => i !== index);
     setFormData({ ...formData, sizes: updated });
@@ -188,7 +188,7 @@ const Products = () => {
       data.append("category", formData.category);
 
       // 🔥 Convert numbers properly
-      const normalizedSizes = formData.sizes.map((s) => ({
+      const normalizedSizes = formData.sizes?.map((s) => ({
         size: s.size,
         price: Number(s.price),
         discountPrice: s.discountPrice ? Number(s.discountPrice) : undefined,
@@ -198,7 +198,7 @@ const Products = () => {
       data.append("sizes", JSON.stringify(normalizedSizes));
 
       const colorsArray = formData.colors
-        ? formData.colors.split(",").map((c) => c.trim())
+        ? formData.colors.split(",")?.map((c) => c.trim())
         : [];
 
       data.append("colors", JSON.stringify(colorsArray));
@@ -287,16 +287,16 @@ const Products = () => {
                 <CircularProgress />
               </TableCell>
             </TableRow>
-          ) : products.length === 0 ? (
+          ) : products?.length === 0 ? (
             <TableRow>
               <TableCell colSpan={8} align="center">
                 No products found
               </TableCell>
             </TableRow>
           ) : (
-            products.map((product) => {
+            products?.map((product) => {
               const minPrice = product.sizes?.length
-                ? Math.min(...product.sizes.map((s) => s.price))
+                ? Math.min(...product.sizes?.map((s) => s.price))
                 : 0;
 
               const totalStock = product.sizes?.reduce(
@@ -413,7 +413,7 @@ const Products = () => {
           />
           <Typography sx={{ mt: 3, mb: 1 }}>Sizes & Pricing</Typography>
 
-          {formData.sizes.map((sizeObj, index) => (
+          {formData.sizes?.map((sizeObj, index) => (
             <Box
               key={index}
               display="grid"
@@ -481,7 +481,7 @@ const Products = () => {
             onChange={handleChange}
             sx={{ mt: 2 }}
           >
-            {categories.map((cat) => (
+            {categories?.map((cat) => (
               <MenuItem key={cat._id} value={cat._id}>
                 {cat.name}
               </MenuItem>
@@ -511,7 +511,7 @@ const Products = () => {
           /> */}
           <br />
           <Box display="flex" gap={2} mt={2} flexWrap="wrap">
-            {previewImages.map((img, index) => (
+            {previewImages?.map((img, index) => (
               <Avatar
                 key={index}
                 src={img}

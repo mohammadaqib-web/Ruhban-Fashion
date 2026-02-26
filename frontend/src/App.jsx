@@ -12,6 +12,7 @@ import ScrollToTop from "./utils/ScrollToTop";
 import Auth from "./pages/Auth";
 import PublicRoute from "./layout/PublicRoute";
 import AdminProtectedRoute from "./utils/AdminProtectedRoute";
+import AllProducts from "./pages/AllProducts";
 
 function App() {
   return (
@@ -26,9 +27,9 @@ function App() {
           <Route element={<PublicRoute />}>
             <Route path="/auth" element={<Auth />} />
           </Route>
+          <Route path="/products" element={<AllProducts />} />
+          <Route path="/products/:category/:id" element={<AllProducts />} />
           {/* <Route path="/profile" element={<Account />} />
-          <Route path="/allProducts" element={<AllProducts />} />
-          <Route path="/:category/:id" element={<AllProducts />} />
           <Route path="/product/:id" element={<SingleProduct />} /> */}
         </Route>
 

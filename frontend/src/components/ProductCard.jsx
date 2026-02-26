@@ -22,7 +22,7 @@ export default function ProductCard({
     <Card
       sx={{
         width: "100%",
-        minWidth: 320,
+        // minWidth: 320,
         maxWidth: 320,
         mx: "auto",
         borderRadius: "28px",
@@ -33,9 +33,10 @@ export default function ProductCard({
         "&:hover": {
           transform: "translateY(-5px)",
           boxShadow: "0 15px 40px rgba(0,0,0,0.12)",
+          cursor: "pointer",
         },
-        minHeight: "400px",
-        maxHeight: "400px",
+        minHeight: "450px",
+        maxHeight: "450px",
       }}
     >
       {/* Badge + Wishlist */}
@@ -72,9 +73,9 @@ export default function ProductCard({
         sx={{
           borderRadius: "20px",
           background: "#fff",
-          p: 3,
-          objectFit: "contain",
-          height: 200,
+          // p: 3,
+          objectFit: "cover",
+          height: 260,
         }}
       />
 

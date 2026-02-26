@@ -7,6 +7,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 import "swiper/css";
 import "swiper/css/navigation";
+import { useNavigate } from "react-router-dom";
 
 const CategoriesSection = ({ categories }) => {
   const theme = useTheme();
@@ -110,6 +111,7 @@ const CategoriesSection = ({ categories }) => {
 };
 
 const CategoryCard = ({ item }) => {
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -120,6 +122,7 @@ const CategoryCard = ({ item }) => {
         display: "block",
         "&:hover img": { transform: "scale(1.08)" },
       }}
+      onClick={() => navigate(`/products/${item.name}/${item._id}`)}
     >
       <Box
         component="img"

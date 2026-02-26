@@ -217,12 +217,34 @@ exports.getProductsAdmin = async (req, res) => {
 exports.getProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-
+    const limit = parseInt(req.query.limit) || 12;
     const skip = (page - 1) * limit;
 
-    // Only active products
+    const { minPrice, maxPrice, category, inStock } = req.query;
+
     const query = { isActive: true };
+
+    // Category filter
+    if (category) {
+      query.category = category;
+    }
+
+    // Build size filter
+    if (minPrice || maxPrice || inStock === "true") {
+      query.sizes = {
+        $elemMatch: {
+          ...(minPrice || maxPrice
+            ? {
+                price: {
+                  $gte: parseInt(minPrice) || 0,
+                  $lte: parseInt(maxPrice) || 999999,
+                },
+              }
+            : {}),
+          ...(inStock === "true" ? { stock: { $gt: 0 } } : {}),
+        },
+      };
+    }
 
     const totalProducts = await Product.countDocuments(query);
 
@@ -237,7 +259,6 @@ exports.getProducts = async (req, res) => {
       currentPage: page,
       totalPages: Math.ceil(totalProducts / limit),
       totalProducts,
-      count: products.length,
       products,
     });
   } catch (error) {
@@ -253,34 +274,47 @@ exports.getProducts = async (req, res) => {
 // ===============================
 exports.getProductsByCategory = async (req, res) => {
   try {
-    const { category } = req.params; 
+    const { category } = req.params;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-
     const skip = (page - 1) * limit;
+
+    const { minPrice, maxPrice, inStock } = req.query;
 
     let categoryDoc;
 
-    // If valid MongoId → search by id
     if (category.match(/^[0-9a-fA-F]{24}$/)) {
       categoryDoc = await Category.findById(category);
     } else {
-      // Otherwise search by name (case insensitive)
       categoryDoc = await Category.findOne({
         name: { $regex: new RegExp(`^${category}$`, "i") },
       });
     }
 
     if (!categoryDoc) {
-      return res.status(404).json({
-        message: "Category not found",
-      });
+      return res.status(404).json({ message: "Category not found" });
     }
 
     const query = {
       category: categoryDoc._id,
       isActive: true,
     };
+
+    if (minPrice || maxPrice || inStock === "true") {
+      query.sizes = {
+        $elemMatch: {
+          ...(minPrice || maxPrice
+            ? {
+                price: {
+                  $gte: parseInt(minPrice) || 0,
+                  $lte: parseInt(maxPrice) || 999999,
+                },
+              }
+            : {}),
+          ...(inStock === "true" ? { stock: { $gt: 0 } } : {}),
+        },
+      };
+    }
 
     const totalProducts = await Product.countDocuments(query);
 
@@ -296,7 +330,6 @@ exports.getProductsByCategory = async (req, res) => {
       currentPage: page,
       totalPages: Math.ceil(totalProducts / limit),
       totalProducts,
-      count: products.length,
       products,
     });
   } catch (error) {
