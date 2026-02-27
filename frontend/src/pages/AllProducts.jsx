@@ -338,6 +338,7 @@ const AllProducts = () => {
                     return (
                       <Grid key={product._id} size={{ xs: 6, md: 4 }}>
                         <ProductCard
+                          id={product?._id}
                           image={product.images[0]?.url}
                           title={product.name}
                           price={minEffectivePrice}

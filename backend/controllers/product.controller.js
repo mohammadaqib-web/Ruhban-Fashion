@@ -1,6 +1,7 @@
 const Product = require("../models/product.model");
 const Category = require("../models/category.model");
 const cloudinary = require("../config/cloudinary");
+const { default: mongoose } = require("mongoose");
 
 // Helper: Upload image to cloudinary
 const uploadToCloudinary = (fileBuffer) => {
@@ -336,6 +337,45 @@ exports.getProductsByCategory = async (req, res) => {
     console.error("Get Products By Category Error:", error);
     res.status(500).json({
       message: "Failed to fetch category products",
+    });
+  }
+};
+
+// ===============================
+// Get Single Product Detail
+// ===============================
+exports.getSingleProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID",
+      });
+    }
+
+    const product = await Product.findOne({
+      _id: id,
+      isActive: true,
+    }).populate("category", "name");
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      product,
+    });
+  } catch (error) {
+    console.error("Get Single Product Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
     });
   }
 };

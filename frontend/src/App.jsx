@@ -13,6 +13,7 @@ import Auth from "./pages/Auth";
 import PublicRoute from "./layout/PublicRoute";
 import AdminProtectedRoute from "./utils/AdminProtectedRoute";
 import AllProducts from "./pages/AllProducts";
+import ProductPage from "./pages/ProductPage";
 
 function App() {
   return (
@@ -29,8 +30,8 @@ function App() {
           </Route>
           <Route path="/products" element={<AllProducts />} />
           <Route path="/products/:category/:id" element={<AllProducts />} />
-          {/* <Route path="/profile" element={<Account />} />
-          <Route path="/product/:id" element={<SingleProduct />} /> */}
+          <Route path="/product/:id" element={<ProductPage />} />
+          {/* <Route path="/profile" element={<Account />} />*/}
         </Route>
 
         <Route element={<AdminProtectedRoute />}>

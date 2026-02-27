@@ -9,8 +9,10 @@ import {
   IconButton,
 } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductCard({
+  id,
   image,
   title,
   brand,
@@ -18,6 +20,8 @@ export default function ProductCard({
   oldPrice,
   badge,
 }) {
+  const navigate = useNavigate();
+  
   return (
     <Card
       sx={{
@@ -38,6 +42,7 @@ export default function ProductCard({
         minHeight: "450px",
         maxHeight: "450px",
       }}
+      onClick={() => navigate(`/product/${id}`)}
     >
       {/* Badge + Wishlist */}
       {/* <Box

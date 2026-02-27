@@ -8,11 +8,9 @@ import {
   IconButton,
 } from "@mui/material";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const Footer = ({ categories = [] }) => {
-  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -88,7 +86,7 @@ const Footer = ({ categories = [] }) => {
               {/* <FooterLink text="Ballia" /> */}
               <IconButton
                 component="a"
-                href="https://instagram.com"
+                href="https://www.instagram.com/ruhban_fashion_wear"
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{ color: "#fff" }}
