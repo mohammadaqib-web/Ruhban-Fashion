@@ -18,6 +18,7 @@ import axios from "axios";
 import userTokenValidity from "../utils/UserTokenValidity";
 import { CircularProgress, Fade, Slide } from "@mui/material";
 import { toast } from "react-toastify";
+import SuggestedProducts from "../components/SuggestedProducts";
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -477,6 +478,8 @@ const ProductPage = () => {
                 )}
               </Box>
             </Box>
+
+            <SuggestedProducts productId={id} />
           </Container>
         </Slide>
       </Box>

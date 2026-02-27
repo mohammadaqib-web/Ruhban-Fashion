@@ -409,3 +409,67 @@ exports.searchProducts = async (req, res) => {
     });
   }
 };
+
+exports.getRandomProducts = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 8;
+    const { minPrice, maxPrice, category, inStock } = req.query;
+
+    const matchQuery = { isActive: true };
+
+    if (category) {
+      matchQuery.category = mongoose.Types.ObjectId(category);
+    }
+
+    if (minPrice || maxPrice || inStock === "true") {
+      matchQuery.sizes = {
+        $elemMatch: {
+          ...(minPrice || maxPrice
+            ? {
+                price: {
+                  $gte: parseInt(minPrice) || 0,
+                  $lte: parseInt(maxPrice) || 999999,
+                },
+              }
+            : {}),
+          ...(inStock === "true" ? { stock: { $gt: 0 } } : {}),
+        },
+      };
+    }
+
+    const randomProducts = await Product.aggregate([
+      { $match: matchQuery },
+      { $sample: { size: limit } },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      { $unwind: "$category" },
+      {
+        $project: {
+          name: 1,
+          slug: 1,
+          images: 1,
+          sizes: 1,
+          category: { name: 1 },
+          createdAt: 1,
+        },
+      },
+    ]);
+
+    res.json({
+      success: true,
+      total: randomProducts.length,
+      products: randomProducts,
+    });
+  } catch (error) {
+    console.error("Get Random Products Error:", error);
+    res.status(500).json({
+      message: "Failed to fetch random products",
+    });
+  }
+};
