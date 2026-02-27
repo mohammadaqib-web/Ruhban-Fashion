@@ -16,6 +16,7 @@ import {
   ListItemText,
   useMediaQuery,
   Divider,
+  CircularProgress,
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
@@ -32,6 +33,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Navbar = ({ categories = [] }) => {
   const theme = useTheme();
@@ -40,6 +42,11 @@ const Navbar = ({ categories = [] }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [openProducts, setOpenProducts] = useState(false);
+
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -90,6 +97,29 @@ const Navbar = ({ categories = [] }) => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(async () => {
+      if (!searchQuery.trim()) {
+        setSearchResults([]);
+        return;
+      }
+
+      try {
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_APP_API}/products/search?keyword=${searchQuery}`,
+        );
+
+        setSearchResults(data.products);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery]);
 
   return (
     <>
@@ -258,7 +288,7 @@ const Navbar = ({ categories = [] }) => {
 
             {/* RIGHT ICONS */}
             <Box sx={{ mr: -2 }}>
-              <IconButton color="inherit">
+              <IconButton color="inherit" onClick={() => setSearchOpen(true)}>
                 <SearchIcon />
               </IconButton>
 
@@ -455,6 +485,167 @@ const Navbar = ({ categories = [] }) => {
               </ListItemButton>
             </ListItem>
           </List>
+        </Box>
+      </Drawer>
+
+      <Drawer
+        anchor="top"
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        PaperProps={{
+          sx: {
+            height: { xs: "100vh", md: "100vh" },
+            backgroundColor: "black",
+            color: "white",
+          },
+        }}
+      >
+        {/* Close Button */}
+        <Box sx={{ textAlign: "right", pr: 1, pt: 1 }}>
+          <IconButton
+            onClick={() => setSearchOpen(false)}
+            sx={{ color: "white" }}
+          >
+            <CloseIcon sx={{ fontSize: 28 }} />
+          </IconButton>
+        </Box>
+
+        <Box
+          display="flex"
+          height="100%"
+          sx={{
+            px: { xs: 3, md: 10 },
+            pb: 4,
+          }}
+        >
+          {/* ---------------- LEFT CATEGORY PANEL ---------------- */}
+          <Box
+            sx={{
+              width: "20%",
+              pr: 4,
+              borderRight: "1px solid brown",
+              display: { xs: "none", md: "flex" },
+              flexDirection: "column",
+            }}
+          >
+            <Typography
+              sx={{
+                mb: 1.5,
+                cursor: "pointer",
+                fontSize: 18,
+                "&:hover": { color: "brown", ml: 1 },
+                transition: "0.3s",
+              }}
+              onClick={() => {
+                navigate("/products");
+                setSearchOpen(false);
+              }}
+            >
+              ALL PRODUCTS
+            </Typography>
+
+            {categories?.categories?.map((cat) => (
+              <Typography
+                key={cat._id}
+                sx={{
+                  mb: 1.5,
+                  cursor: "pointer",
+                  fontSize: 18,
+                  "&:hover": { color: "brown", ml: 1 },
+                  transition: "0.3s",
+                }}
+                onClick={() => {
+                  navigate(`/products/${cat.name}/${cat._id}`);
+                  setSearchOpen(false);
+                }}
+              >
+                {cat.name.toUpperCase()}
+              </Typography>
+            ))}
+          </Box>
+
+          {/* ---------------- RIGHT SEARCH PANEL ---------------- */}
+          <Box sx={{ flex: 1, pl: { xs: 0, md: 6 } }}>
+            {/* Search Input */}
+            <Box display="flex" alignItems="center">
+              <input
+                autoFocus
+                placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setSearchResults([]);
+                  if (e.target.value !== "") {
+                    setLoading(true);
+                  }
+                }}
+                style={{
+                  width: "100%",
+                  fontSize: "26px",
+                  border: "none",
+                  borderBottom: "2px solid brown",
+                  outline: "none",
+                  background: "transparent",
+                  paddingBottom: "10px",
+                  color: "white",
+                }}
+              />
+
+              {/* <IconButton
+                onClick={() => setSearchQuery("")}
+                sx={{ color: "white" }}
+              >
+                <CloseIcon />
+              </IconButton> */}
+            </Box>
+
+            {/* Results Scroll Area */}
+            <Box
+              sx={{
+                mt: 4,
+                maxHeight: "80vh",
+                overflowY: "auto",
+                pr: 2,
+                scrollbarWidth: "none",
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+              }}
+            >
+              {loading && <CircularProgress sx={{ color: "white" }} />}
+
+              {searchResults.map((product) => (
+                <Box
+                  key={product._id}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 3,
+                    mb: 3,
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    navigate(`/product/${product._id}`);
+                    setSearchOpen(false);
+                  }}
+                >
+                  <img
+                    src={product.images?.[0]?.url}
+                    width="60"
+                    height="60"
+                    style={{ objectFit: "cover", borderRadius: 8 }}
+                  />
+                  <Typography sx={{ fontSize: 18 }}>{product.name}</Typography>
+                </Box>
+              ))}
+
+              {!loading && searchQuery && searchResults.length === 0 && (
+                <Typography sx={{ mt: 3, color: "gray" }}>
+                  No products found
+                </Typography>
+              )}
+            </Box>
+          </Box>
         </Box>
       </Drawer>
     </>

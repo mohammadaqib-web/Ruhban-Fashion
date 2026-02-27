@@ -379,3 +379,33 @@ exports.getSingleProduct = async (req, res) => {
     });
   }
 };
+
+exports.searchProducts = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+
+    if (!keyword || keyword.trim() === "") {
+      return res.status(200).json({
+        success: true,
+        products: [],
+      });
+    }
+
+    const products = await Product.find({
+      isActive: true,
+      name: { $regex: keyword, $options: "i" },
+    })
+      .select("name images")
+      .limit(10);
+
+    res.status(200).json({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Search failed",
+    });
+  }
+};
