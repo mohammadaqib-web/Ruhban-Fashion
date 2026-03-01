@@ -15,6 +15,7 @@ import AdminProtectedRoute from "./utils/AdminProtectedRoute";
 import AllProducts from "./pages/AllProducts";
 import ProductPage from "./pages/ProductPage";
 import Account from "./pages/Account";
+import Contact from "./pages/Contact";
 
 function App() {
   return (
@@ -24,8 +25,8 @@ function App() {
       <Routes>
         <Route element={<NavbarLayout />}>
           <Route path="/" element={<Home />} />
-          {/* <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} /> */}
+          {/* <Route path="/about" element={<About />} /> */}
+          <Route path="/contact" element={<Contact />} />
           <Route element={<PublicRoute />}>
             <Route path="/auth" element={<Auth />} />
           </Route>
