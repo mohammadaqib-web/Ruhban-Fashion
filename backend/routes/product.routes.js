@@ -13,6 +13,7 @@ const {
   getSingleProduct,
   searchProducts,
   getRandomProducts,
+  validateCart,
 } = require("../controllers/product.controller");
 
 router.get("/user", getProducts);
@@ -24,5 +25,6 @@ router.get("/random", getRandomProducts);
 router.get("/:id", getSingleProduct);
 router.put("/:id", auth, admin, upload.array("images", 5), updateProduct);
 router.delete("/:id", auth, admin, deleteProduct);
+router.post("/cart/validate", validateCart);
 
 module.exports = router;

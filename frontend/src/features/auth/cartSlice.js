@@ -12,11 +12,17 @@ const cartSlice = createSlice({
       const item = action.payload;
 
       const existingItem = state.cartItems.find(
-        (i) => i.productId === item.productId && i.sizeId === item.sizeId,
+        (i) =>
+          i.productId === item.productId &&
+          i.sizeId === item.sizeId
       );
 
       if (existingItem) {
-        existingItem.quantity += item.quantity;
+        const newQty = existingItem.quantity + item.quantity;
+        existingItem.quantity =
+          newQty > existingItem.stock
+            ? existingItem.stock
+            : newQty;
       } else {
         state.cartItems.push(item);
       }
@@ -26,17 +32,23 @@ const cartSlice = createSlice({
       const { productId, sizeId } = action.payload;
 
       const item = state.cartItems.find(
-        (i) => i.productId === productId && i.sizeId === sizeId,
+        (i) =>
+          i.productId === productId &&
+          i.sizeId === sizeId
       );
 
-      if (item) item.quantity += 1;
+      if (item && item.quantity < item.stock) {
+        item.quantity += 1;
+      }
     },
 
     decreaseQty: (state, action) => {
       const { productId, sizeId } = action.payload;
 
       const item = state.cartItems.find(
-        (i) => i.productId === productId && i.sizeId === sizeId,
+        (i) =>
+          i.productId === productId &&
+          i.sizeId === sizeId
       );
 
       if (item && item.quantity > 1) {
@@ -48,7 +60,11 @@ const cartSlice = createSlice({
       const { productId, sizeId } = action.payload;
 
       state.cartItems = state.cartItems.filter(
-        (i) => !(i.productId === productId && i.sizeId === sizeId),
+        (i) =>
+          !(
+            i.productId === productId &&
+            i.sizeId === sizeId
+          )
       );
     },
 
@@ -67,3 +83,19 @@ export const {
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
+
+/* ✅ SELECTORS (outside slice) */
+export const selectCartItems = (state) =>
+  state.cart.cartItems;
+
+export const selectCartCount = (state) =>
+  state.cart.cartItems.reduce(
+    (acc, item) => acc + item.quantity,
+    0
+  );
+
+export const selectCartTotal = (state) =>
+  state.cart.cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );

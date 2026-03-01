@@ -85,7 +85,7 @@ const ProductCheckoutModal = ({
       );
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY,
+        key: import.meta.env.VITE_APP_razorpay_key_id,
         amount: data.amount,
         currency: "INR",
         order_id: data.id,

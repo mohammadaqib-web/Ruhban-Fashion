@@ -473,3 +473,46 @@ exports.getRandomProducts = async (req, res) => {
     });
   }
 };
+
+exports.validateCart = async (req, res) => {
+  try {
+    const { items } = req.body;
+
+    if (!items || items.length === 0) {
+      return res.json([]);
+    }
+
+    const validatedItems = [];
+
+    for (const cartItem of items) {
+      const product = await Product.findById(cartItem.productId);
+
+      if (!product) continue;
+
+      const sizeData = product.sizes.find(
+        (s) => s._id.toString() === cartItem.sizeId,
+      );
+
+      if (!sizeData) continue;
+
+      const availableQty = Math.min(cartItem.quantity, sizeData.stock);
+
+      validatedItems.push({
+        productId: product._id,
+        sizeId: sizeData._id,
+        name: product.name,
+        size: sizeData.size,
+        image: product.images[0]?.url,
+        price: sizeData.discountPrice || sizeData.price,
+        stock: sizeData.stock,
+        requestedQty: cartItem.quantity,
+        availableQty,
+      });
+    }
+
+    res.json(validatedItems);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Cart validation failed" });
+  }
+};

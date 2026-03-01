@@ -20,6 +20,8 @@ import { CircularProgress, Fade, Slide } from "@mui/material";
 import { toast } from "react-toastify";
 import SuggestedProducts from "../components/SuggestedProducts";
 import ProductCheckoutModal from "../components/ProductCheckoutModal";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../features/auth/cartSlice";
 
 const ProductPage = () => {
   const location = useLocation();
@@ -27,6 +29,7 @@ const ProductPage = () => {
   const validateUser = userTokenValidity();
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -330,10 +333,10 @@ const ProductPage = () => {
                       <ToggleButton
                         key={s.size}
                         value={s.size}
-                        disabled={s.stock === 0}
-                        sx={{
-                          opacity: s.stock === 0 ? 0.4 : 1,
-                        }}
+                        // disabled={s.stock === 0}
+                        // sx={{
+                        //   opacity: s.stock === 0 ? 0.8 : 1,
+                        // }}
                       >
                         {s.size.toUpperCase()}
                       </ToggleButton>
@@ -402,6 +405,23 @@ const ProductPage = () => {
                     fullWidth
                     sx={{ p: 1.5, borderRadius: 24 }}
                     disabled={!selectedSize || selectedSize.stock === 0}
+                    onClick={() => {
+                      dispatch(
+                        addToCart({
+                          productId: product._id,
+                          name: product.name,
+                          image: product.images[0]?.url,
+                          sizeId: selectedSize._id,
+                          size: selectedSize.size,
+                          price:
+                            selectedSize.discountPrice || selectedSize.price,
+                          stock: selectedSize.stock,
+                          quantity,
+                        }),
+                      );
+
+                      // toast.success("Added to cart 🛒");
+                    }}
                   >
                     Add to Cart
                   </Button>

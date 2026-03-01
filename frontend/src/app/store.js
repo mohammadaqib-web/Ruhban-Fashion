@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/authSlice";
-// import cartReducer from "../features/auth/cartSlice";
+import cartReducer from "../features/auth/cartSlice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { encryptTransform } from "redux-persist-transform-encrypt";
@@ -15,16 +15,13 @@ const encryptor = encryptTransform({
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: [
-    "auth",
-    // , "cart"
-  ],
+  whitelist: ["auth", , "cart"],
   transforms: [encryptor],
 };
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  // cart: cartReducer,
+  cart: cartReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
