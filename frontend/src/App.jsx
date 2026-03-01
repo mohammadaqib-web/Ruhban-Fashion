@@ -14,6 +14,7 @@ import PublicRoute from "./layout/PublicRoute";
 import AdminProtectedRoute from "./utils/AdminProtectedRoute";
 import AllProducts from "./pages/AllProducts";
 import ProductPage from "./pages/ProductPage";
+import Account from "./pages/Account";
 
 function App() {
   return (
@@ -31,7 +32,7 @@ function App() {
           <Route path="/products" element={<AllProducts />} />
           <Route path="/products/:category/:id" element={<AllProducts />} />
           <Route path="/product/:id" element={<ProductPage />} />
-          {/* <Route path="/profile" element={<Account />} />*/}
+          <Route path="/profile" element={<Account />} />
         </Route>
 
         <Route element={<AdminProtectedRoute />}>

@@ -23,7 +23,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CloseIcon from "@mui/icons-material/Close";
@@ -39,7 +39,7 @@ import { useSelector } from "react-redux";
 import {
   selectCartItems,
   selectCartCount,
-  selectCartTotal,
+  // selectCartTotal,
   increaseQty,
   decreaseQty,
   removeFromCart,
@@ -47,11 +47,14 @@ import {
 } from "../features/auth/cartSlice";
 import { useDispatch } from "react-redux";
 import Backdrop from "@mui/material/Backdrop";
+import userTokenValidity from "../utils/UserTokenValidity";
+import { logout } from "../features/auth/authSlice";
 
 const Navbar = ({ categories = [] }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const token = useSelector((state) => state.auth.token);
+  const validUser = userTokenValidity();
 
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
@@ -194,7 +197,7 @@ const Navbar = ({ categories = [] }) => {
   );
 
   const handlePayment = async () => {
-    if (!token) {
+    if (!validUser) {
       navigate(`/auth?redirect=${location.pathname}`);
       return;
     }
@@ -595,7 +598,16 @@ const Navbar = ({ categories = [] }) => {
                 <SearchIcon />
               </IconButton>
 
-              <IconButton color="inherit">
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  if (validUser) navigate("/profile");
+                  else {
+                    dispatch(logout());
+                    navigate(`/auth?redirect=${location.pathname}`);
+                  }
+                }}
+              >
                 <PersonOutlineIcon />
               </IconButton>
 

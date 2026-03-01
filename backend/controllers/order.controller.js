@@ -124,7 +124,13 @@ exports.createOrder = async (req, res) => {
 
 // Get My Orders
 exports.getMyOrders = async (req, res) => {
-  const orders = await Order.find({ user: req.user.id });
+  const orders = await Order.find({ user: req.user.id })
+    .populate({
+      path: "orderItems.product",
+      select: "name images",
+    })
+    .sort({ createdAt: -1 });
+
   res.json(orders);
 };
 
