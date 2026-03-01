@@ -13,17 +13,20 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import userTokenValidity from "../utils/UserTokenValidity";
 import { CircularProgress, Fade, Slide } from "@mui/material";
 import { toast } from "react-toastify";
 import SuggestedProducts from "../components/SuggestedProducts";
+import ProductCheckoutModal from "../components/ProductCheckoutModal";
 
 const ProductPage = () => {
+  const location = useLocation();
   const { id } = useParams();
   const validateUser = userTokenValidity();
   const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,6 +39,7 @@ const ProductPage = () => {
   const [reviews, setReviews] = useState([]);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -128,6 +132,12 @@ const ProductPage = () => {
       )
     : 0;
 
+  useEffect(() => {
+    if (selectedSize && quantity > selectedSize.stock) {
+      setQuantity(1);
+    }
+  }, [selectedSize, quantity]);
+
   if (loading) {
     return (
       <Container
@@ -184,7 +194,7 @@ const ProductPage = () => {
           <Container sx={{ py: 6 }}>
             <Grid container spacing={6}>
               {/* LEFT - Product Image */}
-              <Grid size={{ xs: 12, md: 6 }} mt={{ xs: -4, md: -2 }}>
+              <Grid size={{ xs: 12, md: 6 }} mt={{ xs: -4, md: 0 }}>
                 <Paper
                   elevation={0}
                   sx={{
@@ -215,37 +225,37 @@ const ProductPage = () => {
                 </Typography>
 
                 <Typography variant="h6" sx={{ mb: 2 }}>
-                  ₹{product?.sizes?.find((s) => s.size === size)?.price}
-                  <span
-                    style={{
-                      fontSize: 14,
-                      color: "gray",
-                      marginLeft: "5px",
-                      position: "relative",
-                    }}
-                  >
-                    {
-                      product?.sizes?.find((s) => s.size === size)
-                        ?.discountPrice
-                    }
+                  ₹{selectedSize?.discountPrice || selectedSize?.price}
+                  {selectedSize?.discountPrice && (
                     <span
                       style={{
-                        position: "absolute",
-                        left: -3,
-                        right: 0,
-                        top: "40%",
-                        height: "1px",
-                        backgroundColor: "gray",
-                        transform: "rotate(-15deg)",
-                        width: "125%",
+                        fontSize: 14,
+                        color: "gray",
+                        marginLeft: "5px",
+                        position: "relative",
                       }}
-                    />
-                  </span>
+                    >
+                      {selectedSize.price}
+                      <span
+                        style={{
+                          position: "absolute",
+                          left: -3,
+                          right: 0,
+                          top: "40%",
+                          height: "1px",
+                          backgroundColor: "gray",
+                          transform: "rotate(-15deg)",
+                          width: "125%",
+                        }}
+                      />
+                    </span>
+                  )}
                   {discountPercent > 0 && (
                     <span
                       style={{
                         marginLeft: 20,
                         fontWeight: 600,
+                        color: "red",
                       }}
                     >
                       {discountPercent}% OFF
@@ -317,7 +327,14 @@ const ProductPage = () => {
                       return aVal.localeCompare(bVal);
                     })
                     .map((s) => (
-                      <ToggleButton key={s.size} value={s.size}>
+                      <ToggleButton
+                        key={s.size}
+                        value={s.size}
+                        disabled={s.stock === 0}
+                        sx={{
+                          opacity: s.stock === 0 ? 0.4 : 1,
+                        }}
+                      >
                         {s.size.toUpperCase()}
                       </ToggleButton>
                     ))}
@@ -344,11 +361,39 @@ const ProductPage = () => {
                   <Typography sx={{ ml: 2, mr: 2 }}>{quantity}</Typography>
                   <Button
                     variant="outlined"
-                    onClick={() => setQuantity(quantity + 1)}
+                    onClick={() => {
+                      if (
+                        selectedSize?.stock &&
+                        quantity < selectedSize.stock
+                      ) {
+                        setQuantity(quantity + 1);
+                      }
+                    }}
                   >
                     +
                   </Button>
                 </Box>
+
+                <Typography
+                  sx={{
+                    mt: -1,
+                    mb: 3,
+                    color:
+                      selectedSize?.stock > 5
+                        ? "green"
+                        : selectedSize?.stock > 0
+                          ? "orange"
+                          : "red",
+                    fontWeight: 600,
+                  }}
+                >
+                  {selectedSize?.stock > 5 &&
+                    `In Stock (${selectedSize.stock} available)`}
+                  {selectedSize?.stock > 0 &&
+                    selectedSize?.stock <= 5 &&
+                    `Only ${selectedSize.stock} left! Hurry 🔥`}
+                  {selectedSize?.stock === 0 && "Out of Stock"}
+                </Typography>
 
                 {/* Buttons */}
                 <Box sx={{ display: "flex", gap: 2 }}>
@@ -356,6 +401,7 @@ const ProductPage = () => {
                     variant="outlined"
                     fullWidth
                     sx={{ p: 1.5, borderRadius: 24 }}
+                    disabled={!selectedSize || selectedSize.stock === 0}
                   >
                     Add to Cart
                   </Button>
@@ -363,6 +409,14 @@ const ProductPage = () => {
                     variant="contained"
                     fullWidth
                     sx={{ p: 1.5, borderRadius: 24 }}
+                    disabled={!selectedSize || selectedSize.stock === 0}
+                    onClick={() => {
+                      if (validateUser) {
+                        setCheckoutOpen(true);
+                      } else {
+                        navigate(`/auth?redirect=${location.pathname}`);
+                      }
+                    }}
                   >
                     Buy Now
                   </Button>
@@ -480,6 +534,14 @@ const ProductPage = () => {
             </Box>
 
             <SuggestedProducts productId={id} />
+
+            <ProductCheckoutModal
+              open={checkoutOpen}
+              onClose={() => setCheckoutOpen(false)}
+              product={product}
+              selectedSize={selectedSize}
+              qty={quantity}
+            />
           </Container>
         </Slide>
       </Box>

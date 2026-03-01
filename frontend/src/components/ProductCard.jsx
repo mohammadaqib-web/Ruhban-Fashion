@@ -21,7 +21,7 @@ export default function ProductCard({
   badge,
 }) {
   const navigate = useNavigate();
-  
+
   return (
     <Card
       sx={{

@@ -521,16 +521,16 @@ const Navbar = ({ categories = [] }) => {
           {/* ---------------- LEFT CATEGORY PANEL ---------------- */}
           <Box
             sx={{
-              width: "20%",
+              width: "15%",
               pr: 4,
-              borderRight: "1px solid brown",
+              borderRight: "1px solid grey",
               display: { xs: "none", md: "flex" },
               flexDirection: "column",
             }}
           >
             <Typography
               sx={{
-                mb: 1.5,
+                mb: 2,
                 cursor: "pointer",
                 fontSize: 18,
                 "&:hover": { color: "brown", ml: 1 },
@@ -548,7 +548,7 @@ const Navbar = ({ categories = [] }) => {
               <Typography
                 key={cat._id}
                 sx={{
-                  mb: 1.5,
+                  mb: 2,
                   cursor: "pointer",
                   fontSize: 18,
                   "&:hover": { color: "brown", ml: 1 },

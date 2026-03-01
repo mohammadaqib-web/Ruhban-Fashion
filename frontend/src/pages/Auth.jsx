@@ -19,6 +19,8 @@ import dayjs from "dayjs";
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
+  const params = new URLSearchParams(location.search);
+  const redirect = params.get("redirect");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -51,7 +53,7 @@ const Auth = () => {
         {
           number: formData.number,
           password: formData.password,
-        }
+        },
       );
 
       dispatch(
@@ -59,11 +61,11 @@ const Auth = () => {
           user: res.data.user,
           token: res.data.token,
           loginTime: dayjs().valueOf(),
-        })
+        }),
       );
 
       toast.success("Login Successful!");
-      navigate("/");
+      navigate(redirect || "/");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Login failed");
     } finally {
@@ -82,7 +84,7 @@ const Auth = () => {
 
       const res = await axios.post(
         `${import.meta.env.VITE_APP_API}/auth/registerWithoutOTP`,
-        formData
+        formData,
       );
 
       dispatch(
@@ -90,11 +92,11 @@ const Auth = () => {
           user: res.data.user,
           token: res.data.token,
           loginTime: dayjs().valueOf(),
-        })
+        }),
       );
 
       toast.success("Account created successfully!");
-      navigate("/");
+      navigate(redirect || "/");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Signup failed");
     } finally {
@@ -201,9 +203,7 @@ const Auth = () => {
             textAlign="center"
             sx={{ color: "#aaa" }}
           >
-            {isLogin
-              ? "Don't have an account?"
-              : "Already have an account?"}{" "}
+            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
             <Link
               component="button"
               underline="none"
