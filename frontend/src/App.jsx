@@ -16,6 +16,7 @@ import AllProducts from "./pages/AllProducts";
 import ProductPage from "./pages/ProductPage";
 import Account from "./pages/Account";
 import Contact from "./pages/Contact";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
       <Routes>
         <Route element={<NavbarLayout />}>
           <Route path="/" element={<Home />} />
-          {/* <Route path="/about" element={<About />} /> */}
+          <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route element={<PublicRoute />}>
             <Route path="/auth" element={<Auth />} />

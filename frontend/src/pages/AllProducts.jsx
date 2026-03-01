@@ -28,6 +28,7 @@ import { useSearchParams } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { CircularProgress } from "@mui/material";
+import ScrollToTop from "../utils/ScrollToTop";
 
 const API = import.meta.env.VITE_APP_API;
 
@@ -247,6 +248,7 @@ const AllProducts = () => {
 
   return (
     <Box>
+      <ScrollToTop />
       <Box
         display={"flex"}
         justifyContent={"center"}

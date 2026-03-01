@@ -22,6 +22,13 @@ const uploadToCloudinary = (fileBuffer) => {
 // ===============================
 exports.createProduct = async (req, res) => {
   try {
+    const productCount = await Product.countDocuments();
+    if (productCount >= 100) {
+      return res.status(400).json({
+        message: "Product limit reached (Maximum 100 products allowed)",
+      });
+    }
+
     const { name, description, category, sizes, colors, isFeatured, isActive } =
       req.body;
 
