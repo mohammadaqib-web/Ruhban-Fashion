@@ -3,24 +3,32 @@ const Product = require("../models/product.model");
 const User = require("../models/user.model");
 
 exports.getDashboardStats = async (req, res) => {
-  const totalUsers = await User.countDocuments();
-  const totalProducts = await Product.countDocuments();
-  const totalOrders = await Order.countDocuments();
+  try {
+    const totalUsers = await User.countDocuments();
+    const totalProducts = await Product.countDocuments();
+    const totalOrders = await Order.countDocuments();
 
-  const revenueData = await Order.aggregate([
-    { $match: { paymentStatus: "Paid" } },
-    {
-      $group: {
-        _id: null,
-        totalRevenue: { $sum: "$totalPrice" },
+    const revenueData = await Order.aggregate([
+      {
+        $match: {
+          "payment.paymentStatus": "paid", // ✅ correct path + lowercase
+        },
       },
-    },
-  ]);
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$totalAmount" }, // ✅ correct field
+        },
+      },
+    ]);
 
-  res.json({
-    totalUsers,
-    totalProducts,
-    totalOrders,
-    totalRevenue: revenueData[0]?.totalRevenue || 0,
-  });
+    res.json({
+      totalUsers,
+      totalProducts,
+      totalOrders,
+      totalRevenue: revenueData[0]?.totalRevenue || 0,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching dashboard stats" });
+  }
 };

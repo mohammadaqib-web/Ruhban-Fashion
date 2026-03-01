@@ -9,6 +9,7 @@ const {
   updateOrderStatus,
   createRazorpayOrder,
   verifyRazorpayPayment,
+  updatePaymentStatus,
 } = require("../controllers/order.controller");
 
 router.post("/", auth, createOrder);
@@ -17,5 +18,6 @@ router.get("/", auth, admin, getAllOrders);
 router.put("/:id", auth, admin, updateOrderStatus);
 router.post("/razorpay/create", auth, createRazorpayOrder);
 router.post("/razorpay/verify", auth, verifyRazorpayPayment);
+router.put("/:id/payment-status", auth, admin, updatePaymentStatus);
 
 module.exports = router;
