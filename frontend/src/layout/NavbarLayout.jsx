@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Footer from "../components/Footer";
+import FloatingWhatsApp from "../components/WALogo";
 
 const NavbarLayout = () => {
   const [categories, setCategories] = useState([]);
@@ -27,6 +28,7 @@ const NavbarLayout = () => {
     <>
       <Navbar categories={{ categories }} />
       <Outlet context={{ categories }} />
+      <FloatingWhatsApp />
       <Footer categories={{ categories }} />
     </>
   );
