@@ -472,11 +472,11 @@ const Navbar = ({ categories = [] }) => {
                     fontSize: 18,
                     backgroundColor: isActive("/") ? "white" : "transparent",
                     color: isActive("/") ? "black" : "white",
-                    "&:hover": {
-                      backgroundColor: isActive("/")
-                        ? "white"
-                        : "rgba(255,255,255,0.1)",
-                    },
+                    // "&:hover": {
+                    //   backgroundColor: isActive("/")
+                    //     ? "white"
+                    //     : "rgba(255,255,255,0.1)",
+                    // },
                     pl: 2.5,
                     pr: 2.5,
                   }}
@@ -541,7 +541,17 @@ const Navbar = ({ categories = [] }) => {
                   >
                     <MenuItem
                       onClick={() => handleMenuItemClick("/products")}
-                      sx={{ fontSize: 16 }}
+                      sx={{
+                        fontSize: 16,
+                        backgroundColor: isActive(`/products`)
+                          ? "white"
+                          : "transparent",
+                        color: isActive(`/products`) ? "black" : "white",
+                        "&:hover": {
+                          color: "black",
+                          backgroundColor: "white",
+                        },
+                      }}
                     >
                       {"ALL PRODUCTS"}
                     </MenuItem>
@@ -567,6 +577,10 @@ const Navbar = ({ categories = [] }) => {
                               )
                                 ? "black"
                                 : "white",
+                              "&:hover": {
+                                color: "black",
+                                backgroundColor: "white",
+                              },
                             }}
                           >
                             {cat.name.toUpperCase()}
