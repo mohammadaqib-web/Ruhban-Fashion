@@ -126,7 +126,7 @@ const CategoryCard = ({ item }) => {
     >
       <Box
         component="img"
-        src={item.image.url}
+        src={item?.image?.url}
         alt={item.name}
         sx={{
           width: "100%",

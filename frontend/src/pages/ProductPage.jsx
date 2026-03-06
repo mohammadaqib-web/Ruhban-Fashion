@@ -241,6 +241,7 @@ const ProductPage = () => {
                       flexDirection: { xs: "row", md: "column" }, // 👈 row for mobile
                       overflowX: { xs: "auto", md: "visible" },
                       order: { xs: 2, md: 1 }, // 👈 thumbnails bottom on mobile
+                      justifyContent: "center",
                     }}
                   >
                     {product?.images?.map((img, index) => (
