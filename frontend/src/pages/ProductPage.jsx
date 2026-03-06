@@ -33,6 +33,7 @@ const ProductPage = () => {
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [size, setSize] = useState("M");
   const [quantity, setQuantity] = useState(1);
@@ -53,6 +54,8 @@ const ProductPage = () => {
         );
 
         setProduct(productRes.data.product);
+
+        setSelectedImage(productRes.data.product?.images?.[0]?.url);
         setSize(productRes.data.product?.sizes?.[0]?.size || "");
 
         // Fetch reviews separately
@@ -109,6 +112,7 @@ const ProductPage = () => {
       );
 
       setProduct(productRes.data.product);
+      setSelectedImage(productRes.data.product?.images?.[0]?.url);
 
       // Refresh reviews
       const reviewRes = await axios.get(
@@ -198,31 +202,73 @@ const ProductPage = () => {
             <Grid container spacing={6}>
               {/* LEFT - Product Image */}
               <Grid size={{ xs: 12, md: 6 }} mt={{ xs: -4, md: 0 }}>
-                <Paper
-                  elevation={0}
+                <Box
                   sx={{
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    //   backgroundColor: "#f5f5f5",
-                    p: 3,
+                    display: "flex",
+                    gap: 2,
+                    flexDirection: { xs: "column", md: "row" }, // 👈 switch layout
                   }}
                 >
-                  <Box
-                    component="img"
-                    src={product?.images?.[0]?.url}
-                    alt="Product"
+                  {/* MAIN IMAGE */}
+                  <Paper
+                    elevation={0}
                     sx={{
-                      width: "100%",
-                      borderRadius: 3,
-                      objectFit: "contain",
-                      maxHeight: "450px",
+                      borderRadius: 4,
+                      overflow: "hidden",
+                      p: 2,
+                      flex: 1,
+                      order: { xs: 1, md: 2 }, // 👈 main image first on mobile
                     }}
-                  />
-                </Paper>
+                  >
+                    <Box
+                      component="img"
+                      src={selectedImage}
+                      alt="Product"
+                      sx={{
+                        width: "100%",
+                        borderRadius: 3,
+                        objectFit: "contain",
+                        maxHeight: { xs: 350, md: 450 },
+                      }}
+                    />
+                  </Paper>
+
+                  {/* THUMBNAILS */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      flexDirection: { xs: "row", md: "column" }, // 👈 row for mobile
+                      overflowX: { xs: "auto", md: "visible" },
+                      order: { xs: 2, md: 1 }, // 👈 thumbnails bottom on mobile
+                    }}
+                  >
+                    {product?.images?.map((img, index) => (
+                      <Box
+                        key={index}
+                        component="img"
+                        src={img.url}
+                        onClick={() => setSelectedImage(img.url)}
+                        sx={{
+                          width: { xs: 70, md: 70 },
+                          height: { xs: 90, md: 90 },
+                          objectFit: "cover",
+                          borderRadius: 2,
+                          cursor: "pointer",
+                          border:
+                            selectedImage === img.url
+                              ? "2px solid black"
+                              : "1px solid #ddd",
+                          flexShrink: 0,
+                        }}
+                      />
+                    ))}
+                  </Box>
+                </Box>
               </Grid>
 
               {/* RIGHT - Product Info */}
-              <Grid size={{ xs: 12, md: 6 }} sx={{ mt: { xs: -5, md: 0 } }}>
+              <Grid size={{ xs: 12, md: 6 }} sx={{ mt: { xs: -3, md: 0 } }}>
                 <Typography variant="h4" fontWeight="bold" gutterBottom>
                   {product?.name}
                 </Typography>

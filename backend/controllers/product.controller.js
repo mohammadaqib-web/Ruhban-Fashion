@@ -115,12 +115,27 @@ exports.updateProduct = async (req, res) => {
       product.category = category;
     }
 
-    // If new images uploaded
-    if (req.files && req.files.length > 0) {
-      await Promise.all(
-        product.images.map((img) => cloudinary.uploader.destroy(img.public_id)),
+    const { deletedImages } = req.body;
+
+    // 1️⃣ Delete selected images
+    if (deletedImages) {
+      const parsedDeleted = JSON.parse(deletedImages);
+
+      const imagesToDelete = product.images.filter((img) =>
+        parsedDeleted.includes(img.url),
       );
 
+      await Promise.all(
+        imagesToDelete.map((img) => cloudinary.uploader.destroy(img.public_id)),
+      );
+
+      product.images = product.images.filter(
+        (img) => !parsedDeleted.includes(img.url),
+      );
+    }
+
+    // 2️⃣ Upload new images
+    if (req.files && req.files.length > 0) {
       const uploadedImages = await Promise.all(
         req.files.map(async (file) => {
           const result = await uploadToCloudinary(file.buffer);
@@ -131,7 +146,14 @@ exports.updateProduct = async (req, res) => {
         }),
       );
 
-      product.images = uploadedImages;
+      product.images = [...product.images, ...uploadedImages];
+    }
+
+    // 3️⃣ Limit images to 5
+    if (product.images.length > 5) {
+      return res.status(400).json({
+        message: "Maximum 5 images allowed",
+      });
     }
 
     if (name) product.name = name;

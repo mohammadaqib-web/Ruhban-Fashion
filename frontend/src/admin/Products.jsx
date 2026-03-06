@@ -33,6 +33,7 @@ const Products = () => {
   const [fetching, setFetching] = useState(false);
   const [open, setOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [deletedImages, setDeletedImages] = useState([]);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -81,11 +82,26 @@ const Products = () => {
     const { name, value, type, checked, files } = e.target;
 
     if (name === "images") {
-      const fileArray = Array.from(files);
-      setFormData({ ...formData, images: fileArray });
+      const newFiles = Array.from(files);
 
-      const previews = fileArray?.map((file) => URL.createObjectURL(file));
-      setPreviewImages(previews);
+      // total images = existing preview + new files
+      if (previewImages.length + newFiles.length > 5) {
+        toast.error("Maximum 5 images allowed");
+        return;
+      }
+
+      const updatedImages = [...formData.images, ...newFiles];
+
+      setFormData({
+        ...formData,
+        images: updatedImages,
+      });
+
+      // generate preview only for new files
+      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+
+      // keep existing previews + new previews
+      setPreviewImages((prev) => [...prev, ...newPreviews]);
     } else if (type === "checkbox") {
       setFormData({ ...formData, [name]: checked });
     } else {
@@ -116,6 +132,24 @@ const Products = () => {
     setFormData({ ...formData, sizes: updated });
   };
 
+  const removeImage = (index) => {
+    const image = previewImages[index];
+
+    // if image is an existing URL
+    if (typeof image === "string") {
+      setDeletedImages((prev) => [...prev, image]);
+    } else {
+      const updatedImages = formData.images.filter((_, i) => i !== index);
+
+      setFormData({
+        ...formData,
+        images: updatedImages,
+      });
+    }
+
+    const updatedPreview = previewImages.filter((_, i) => i !== index);
+    setPreviewImages(updatedPreview);
+  };
   // ================= OPEN DIALOG =================
   const handleOpen = (product = null) => {
     if (product) {
@@ -134,7 +168,7 @@ const Products = () => {
         isActive: product.isActive,
         images: [],
       });
-
+      setDeletedImages([]);
       setPreviewImages(product.images?.map((img) => img.url) || []);
     } else {
       setEditingProduct(null);
@@ -149,7 +183,7 @@ const Products = () => {
         isActive: true,
         images: [],
       });
-
+      setDeletedImages([]);
       setPreviewImages([]);
     }
 
@@ -181,11 +215,28 @@ const Products = () => {
         }
       }
 
+      // Calculate final image count
+      const remainingExistingImages = previewImages.filter(
+        (img) => !deletedImages.includes(img),
+      ).length;
+
+      const newImages = formData.images.length;
+
+      const totalImages = remainingExistingImages + newImages;
+
+      // Prevent saving if no images left
+      if (totalImages === 0) {
+        toast.error("Product must have at least 1 image");
+        setLoading(false);
+        return;
+      }
+
       const data = new FormData();
 
       data.append("name", formData.name);
       data.append("description", formData.description);
       data.append("category", formData.category);
+      data.append("deletedImages", JSON.stringify(deletedImages));
 
       // 🔥 Convert numbers properly
       const normalizedSizes = formData.sizes?.map((s) => ({
@@ -510,18 +561,45 @@ const Products = () => {
             label="Active"
           /> */}
           <br />
-          <Box display="flex" gap={2} mt={2} flexWrap="wrap">
+          <Typography sx={{ mt: 2 }} variant="body2">
+            Images ({previewImages.length}/5)
+          </Typography>
+
+          <Box display="flex" gap={2} mt={1} flexWrap="wrap">
             {previewImages?.map((img, index) => (
-              <Avatar
-                key={index}
-                src={img}
-                variant="rounded"
-                sx={{ width: 70, height: 70 }}
-              />
+              <Box key={index} position="relative">
+                <Avatar
+                  src={img}
+                  variant="rounded"
+                  sx={{ width: 70, height: 70 }}
+                />
+
+                <Button
+                  size="small"
+                  color="error"
+                  sx={{
+                    position: "absolute",
+                    top: -8,
+                    right: -8,
+                    minWidth: 20,
+                    height: 20,
+                    borderRadius: "50%",
+                    padding: 0,
+                  }}
+                  onClick={() => removeImage(index)}
+                >
+                  ×
+                </Button>
+              </Box>
             ))}
           </Box>
-          <Button component="label" sx={{ mt: 2 }}>
-            Upload Images
+          <Typography variant="caption" color="text.secondary">
+            Upload between 1 and 5 images. First image will be used as product
+            thumbnail.
+          </Typography>
+          <br />
+          <Button variant="outlined" component="label" sx={{ mt: 2 }}>
+            Upload Images (Max 5)
             <input
               hidden
               type="file"
