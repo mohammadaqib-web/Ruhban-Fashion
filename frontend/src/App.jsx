@@ -17,13 +17,13 @@ import ProductPage from "./pages/ProductPage";
 import Account from "./pages/Account";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
-import { Box, Typography } from "@mui/material";
-import QR from "./assets/qr.jpeg";
+// import { Box, Typography } from "@mui/material";
+// import QR from "./assets/qr.jpeg";
 
 function App() {
   return (
     <>
-      {/* <ScrollToTop />
+      <ScrollToTop />
 
       <Routes>
         <Route element={<NavbarLayout />}>
@@ -48,8 +48,8 @@ function App() {
             <Route path="categories" element={<Categories />} />
           </Route>
         </Route>
-      </Routes> */}
-      <Box
+      </Routes>
+      {/* <Box
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -63,7 +63,7 @@ function App() {
         <Typography variant="h4" sx={{ color: "white", mt: 5 }}>
           Clear the remaining amount on this QR to unlock your website
         </Typography>
-      </Box>
+      </Box> */}
     </>
   );
 }
